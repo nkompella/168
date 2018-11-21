@@ -536,7 +536,7 @@ class StudentUSocket(StudentUSocketBase):
     self.bind(dev.ip_addr, 0)
 
     # Complete for Stage 1
-    x = self.new_packet(ack = false, data=None, syn = True)
+    x = self.new_packet(ack = False, data=None, syn = True)
     x.tcp.seq = 0
     self.tx(x)
     self.state = SYN_SENT
