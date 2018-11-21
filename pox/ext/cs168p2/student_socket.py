@@ -5,6 +5,7 @@ from pox.lib.addresses import IPAddr
 import pox.lib.packet as pkt
 
 # We don't support/implement SYN_RECEIVED, LISTEN states
+# noinspection PyInterpreter
 from tcpip.tcp_sockets import CLOSED, LISTEN, SYN_RECEIVED, ESTABLISHED, \
                               SYN_SENT, FIN_WAIT_1, FIN_WAIT_2, CLOSING, \
                               TIME_WAIT, CLOSE_WAIT, LAST_ACK
@@ -535,6 +536,12 @@ class StudentUSocket(StudentUSocketBase):
     self.bind(dev.ip_addr, 0)
 
     # Complete for Stage 1
+    x = new_packet(ack = false, data=None, syn = True)
+    x.tcp.seq = 0
+    self.tx(x)
+    self.state = SYN_SENT
+
+
 
   def tx(self, p, retxed=False):
     """
