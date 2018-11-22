@@ -585,13 +585,13 @@ class StudentUSocket(StudentUSocketBase):
     elif self.state in (ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2,
                         CLOSE_WAIT, CLOSING, LAST_ACK, TIME_WAIT):
       if self.acceptable_seg(seg, payload):
-        pass
+
         # Complete for Stage 2
-        # if seg.seq == self.rcv.nxt:
-        #   self.handle_accepted_seg(seg, payload)
-        # else:
-        #   self.set_pending_ack()
-        #   pass
+        if seg.seq == self.rcv.nxt:
+          self.handle_accepted_seg(seg, payload)
+        else:
+          self.set_pending_ack()
+          pass
         # Complete for Stage 3
       else:
         self.set_pending_ack()
