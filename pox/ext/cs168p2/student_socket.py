@@ -535,7 +535,7 @@ class StudentUSocket(StudentUSocketBase):
     self.peer = IPAddr(ip), port
     self.bind(dev.ip_addr, 0)
 
-    # Complete for Stage 1
+
     x = self.new_packet(ack = False, data=None, syn = True)
     x.tcp.seq = self.snd.iss
     self.tx(x)
@@ -579,13 +579,18 @@ class StudentUSocket(StudentUSocketBase):
 
     if self.state is CLOSED:
       return
-    # Complete for Stage 1
+
     elif self.state is SYN_SENT:
       self.handle_synsent(seg)
     elif self.state in (ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2,
                         CLOSE_WAIT, CLOSING, LAST_ACK, TIME_WAIT):
       if self.acceptable_seg(seg, payload):
         # Complete for Stage 2
+        if seg.seq == self.rcv.nxt:
+          self.handle_accepted_seg(seg, payload)
+        else:
+          self.set_pending_ack()
+
         pass
         # Complete for Stage 3
       else:
@@ -659,6 +664,12 @@ class StudentUSocket(StudentUSocketBase):
       payload = payload[:rcv.wnd] # Chop to size!
 
     # Complete por Stage 2
+    x = len(payload)
+    self.rcv.nxt = self.rcv.nxt |PLUS| x
+    self.rcv.wnd = self.rcv.wnd |MINUS| x
+    self.rx_data += payload
+    
+
 
   def update_window(self, seg):
     """
@@ -762,6 +773,10 @@ class StudentUSocket(StudentUSocketBase):
       return
 
     # Complete for Stage 2
+    if self.state in (ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2):
+      if len(payload) > 0:
+        self.handle_accepted_payload(payload)
+
 
     # eight, check FIN bit
     if seg.FIN:
