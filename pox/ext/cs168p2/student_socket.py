@@ -775,7 +775,10 @@ class StudentUSocket(StudentUSocketBase):
     # Complete for Stage 2
     if self.state in (ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2):
       if len(payload) > 0:
+        pass
         self.handle_accepted_payload(payload)
+      else:
+        pass
 
 
     # eight, check FIN bit
