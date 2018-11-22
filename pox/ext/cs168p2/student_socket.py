@@ -626,7 +626,7 @@ class StudentUSocket(StudentUSocketBase):
 
     if acceptable_ack:
       # Complete for Stage 1
-      self.rcv.next = seg.ack |PLUS| 1
+      self.rcv.nxt = seg.seq |PLUS| 1
       self.snd.una = seg.ack
 
       if self.snd.una |GT| self.snd.iss:
