@@ -588,10 +588,9 @@ class StudentUSocket(StudentUSocketBase):
         # Complete for Stage 2
         if seg.seq == self.rcv.nxt:
           self.handle_accepted_seg(seg, payload)
-        else:
-          self.set_pending_ack()
+        #else:
+          #self.set_pending_ack()
 
-        pass
         # Complete for Stage 3
       else:
         self.set_pending_ack()
@@ -775,7 +774,6 @@ class StudentUSocket(StudentUSocketBase):
     # Complete for Stage 2
     if self.state in (ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2):
       if len(payload) > 0:
-        pass
         self.handle_accepted_payload(payload)
       else:
         pass
