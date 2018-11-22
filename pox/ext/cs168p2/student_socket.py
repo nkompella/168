@@ -596,6 +596,7 @@ class StudentUSocket(StudentUSocketBase):
 
         else:
           while not(self.rx_queue.empty()):
+            potential = self.rx_queue.peek()
             if potential[0] | GT | self.rcv.nxt:
               self.set_pending_ack()
               break
