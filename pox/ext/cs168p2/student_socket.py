@@ -586,18 +586,33 @@ class StudentUSocket(StudentUSocketBase):
                         CLOSE_WAIT, CLOSING, LAST_ACK, TIME_WAIT):
       if self.acceptable_seg(seg, payload):
 
+        self.rx_queue.push(p)
         # Complete for Stage 2
-        if seg.seq == self.rcv.nxt:
-          self.handle_accepted_seg(seg, payload)
-        else:
+
+        potential = self.rx_queue.peek()
+        if potential[0] |GT| self.rcv.nxt:
           self.set_pending_ack()
           pass
+
+        else:
+          while not(self.rx_queue.empty()):
+            if potential[0] | GT | self.rcv.nxt:
+              self.set_pending_ack()
+              break
+            else:
+              x = self.rx_queue.pop()
+              packet = x[1]
+              segment = packet.tcp
+              pLoad = packet.app[self.rcv.nxt |MINUS| packet.tcp.seq:]
+              self.handle_accepted_seg(segment, pLoad)
+
+
         # Complete for Stage 3
       else:
         self.set_pending_ack()
 
     # Complete for Stage 3 (check recv queue)
-    # data = packet.app[self.rcv.nxt |MINUS| packet.tcp.seq:]
+
 
     self.maybe_send()
 
