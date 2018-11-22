@@ -587,7 +587,8 @@ class StudentUSocket(StudentUSocketBase):
       if self.acceptable_seg(seg, payload):
         # Complete for Stage 2
         if seg.seq == self.rcv.nxt:
-          self.handle_accepted_seg(seg, payload)
+          pass
+        # self.handle_accepted_seg(seg, payload)
         else:
           self.set_pending_ack()
 
@@ -668,7 +669,7 @@ class StudentUSocket(StudentUSocketBase):
     self.rcv.nxt = self.rcv.nxt |PLUS| x
     self.rcv.wnd = self.rcv.wnd |MINUS| x
     self.rx_data += payload
-    
+
 
 
   def update_window(self, seg):
