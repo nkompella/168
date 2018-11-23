@@ -832,7 +832,7 @@ class StudentUSocket(StudentUSocketBase):
       print("Remaining tx =" , remainingTX)
       print(payload)
       self.tx_data = self.tx_data[sendSize:]
-
+      remainingTX = len(self.tx_data)
       p = self.new_packet(ack=True, data=payload, syn=False)
 
       self.tx(p)
