@@ -823,11 +823,11 @@ class StudentUSocket(StudentUSocketBase):
     remainingTX = len(self.tx_data)
     mss = self.mss
     inFlight = self.snd.wnd |MINUS| (self.snd.una |MINUS| self.snd.nxt)
-    availableToSend = window |MINUS| inFlight
+
 
     print("Remaining tx =", remainingTX)
     while remainingTX > 0:
-      sendSize = min(mss, remainingTX, availableToSend |MINUS| bytes_sent)
+      sendSize = min(mss, remainingTX, inFlight |MINUS| bytes_sent)
       if sendSize == 0:
         print("REACHED!")
         break
