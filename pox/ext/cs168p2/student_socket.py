@@ -829,6 +829,7 @@ class StudentUSocket(StudentUSocketBase):
     while remainingTX > 0:
       sendSize = min(mss, remainingTX, availableToSend |MINUS| bytes_sent)
       payload = self.tx_data[:sendSize]
+      print("HELLO HELLO HELLO")
       print(payload)
       self.tx_data = self.tx_data[sendSize:]
 
