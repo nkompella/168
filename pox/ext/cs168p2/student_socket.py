@@ -839,11 +839,10 @@ class StudentUSocket(StudentUSocketBase):
 
       self.tx(p)
       remainingTX = len(self.tx_data)
-      remainingBytes = self.snd.wnd | MINUS | (self.snd.una | MINUS | self.snd.nxt | PLUS | bytes_sent)
-
 
       num_pkts += 1
       bytes_sent += len(payload)
+      remainingBytes = self.snd.wnd | MINUS | (self.snd.una | MINUS | self.snd.nxt | PLUS | bytes_sent)
 
     self.log.debug("sent {0} packets with {1} bytes total".format(num_pkts, bytes_sent))
 
