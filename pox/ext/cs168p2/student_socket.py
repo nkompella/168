@@ -828,6 +828,8 @@ class StudentUSocket(StudentUSocketBase):
     print("Remaining tx =", remainingTX)
     while remainingTX > 0:
       sendSize = min(mss, remainingTX, inFlight |MINUS| bytes_sent)
+      if sendSize == 0:
+        break
       payload = self.tx_data[:sendSize]
       print("Remaining tx =" , remainingTX)
       print(payload)
