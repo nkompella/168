@@ -819,7 +819,7 @@ class StudentUSocket(StudentUSocketBase):
     bytes_sent = 0
     # Complete for Stage 4
 
-    window = self.snd.wnd
+    window = snd.wnd
     remainingTX = len(self.tx_data)
     mss = self.mss
     inFlight = self.snd.wnd |MINUS| (self.snd.una |MINUS| self.snd.nxt)
@@ -827,8 +827,9 @@ class StudentUSocket(StudentUSocketBase):
 
     print("Remaining tx =", remainingTX)
     while remainingTX > 0:
-      sendSize = min(mss, remainingTX, inFlight |MINUS| bytes_sent)
+      sendSize = min(mss, remainingTX, availableToSend |MINUS| bytes_sent)
       if sendSize == 0:
+        print("REACHED!")
         break
       payload = self.tx_data[:sendSize]
       print("Remaining tx =" , remainingTX)
