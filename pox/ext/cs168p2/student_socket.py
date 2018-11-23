@@ -822,24 +822,25 @@ class StudentUSocket(StudentUSocketBase):
     window = snd.wnd
     remainingTX = len(self.tx_data)
     mss = self.mss
-    inFlight = self.snd.wnd |MINUS| (self.snd.una |MINUS| self.snd.nxt)
+    remainingBytes = self.snd.wnd |MINUS| (self.snd.una |MINUS| self.snd.nxt |PLUS| bytes_sent)
 
 
-    print("Remaining tx =", remainingTX)
+
     while remainingTX > 0:
-      sendSize = min(mss, remainingTX, inFlight |MINUS| bytes_sent)
-      print(sendSize)
-      if sendSize == 0:
-        print("REACHED!")
+      if len(self.tx.data) <= 0:
         break
+      if remainingBytes < snd.wnd:
+        break
+
+      sendSize = min(mss, remainingTX, remainingBytes |MINUS| bytes_sent)
       payload = self.tx_data[:sendSize]
-      print("Remaining tx =" , remainingTX)
-      print(payload)
       self.tx_data = self.tx_data[sendSize:]
-      remainingTX = len(self.tx_data)
       p = self.new_packet(ack=True, data=payload, syn=False)
 
       self.tx(p)
+      remainingTX = len(self.tx_data)
+      remainingBytes = self.snd.wnd | MINUS | (self.snd.una | MINUS | self.snd.nxt | PLUS | bytes_sent)
+
 
       num_pkts += 1
       bytes_sent += len(payload)
