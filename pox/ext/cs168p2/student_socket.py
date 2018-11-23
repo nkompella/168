@@ -828,6 +828,7 @@ class StudentUSocket(StudentUSocketBase):
     print("Remaining tx =", remainingTX)
     while remainingTX > 0:
       sendSize = min(mss, remainingTX, inFlight |MINUS| bytes_sent)
+      print(sendSize)
       if sendSize == 0:
         print("REACHED!")
         break
