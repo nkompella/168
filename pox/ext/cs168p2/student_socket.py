@@ -833,8 +833,8 @@ class StudentUSocket(StudentUSocketBase):
       print(payload)
       self.tx_data = self.tx_data[sendSize:]
 
-      p = self.new_packet(ack=True, data=True, syn=False)
-      p.tcp.payload = payload
+      p = self.new_packet(ack=True, data=payload, syn=False)
+      
       self.tx(p)
 
       num_pkts += 1
