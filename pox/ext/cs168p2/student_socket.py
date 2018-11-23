@@ -827,8 +827,7 @@ class StudentUSocket(StudentUSocketBase):
 
 
     while remainingTX > 0:
-      if len(self.tx_data) <= 0:
-        break
+      print ("ONE ITERATION")
       if remainingBytes < snd.wnd:
         break
 
@@ -843,7 +842,7 @@ class StudentUSocket(StudentUSocketBase):
       num_pkts += 1
       bytes_sent += len(payload)
       remainingBytes = self.snd.wnd | MINUS | (self.snd.una | MINUS | self.snd.nxt | PLUS | bytes_sent)
-    print ("sent {0} packets with {1} bytes total".format(num_pkts, bytes_sent))
+
     self.log.debug("sent {0} packets with {1} bytes total".format(num_pkts, bytes_sent))
 
   def start_timer_timewait(self):
