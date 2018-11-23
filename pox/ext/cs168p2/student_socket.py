@@ -555,9 +555,10 @@ class StudentUSocket(StudentUSocketBase):
     # Complete for Stage 8
 
     if (p.tcp.SYN or p.tcp.FIN or p.tcp.payload) and not retxed:
-      pass
+
 
       # Complete for Stage 4
+      self.snd.nxt |PLUS| len(p.tcp.payload)
 
     self.manager.tx(p)
 
@@ -708,7 +709,7 @@ class StudentUSocket(StudentUSocketBase):
     """
     # Complete Stage 4
     acked_pkts = [] # remove when implemented
-
+    self.snd.una = seg.ack
     # Complete Stage 8
 
     # Complete Stage 9
@@ -746,10 +747,15 @@ class StudentUSocket(StudentUSocketBase):
     # fifth, check ACK field
     if self.state in (ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2, CLOSE_WAIT, CLOSING):
       # Complete Stage 4
-
       if snd.una |LE| seg.ack and seg.ack |LE| snd.nxt:
+        self.handle_accepted_ack(seg)
         if snd.wl1 |LT| seg.seq or (snd.wl1 |EQ| seg.seq and snd.wl2 |LE| seg.ack):
           self.update_window(seg)
+      elif seg.ack |LT| self.snd.una:
+        continue_after_ack = False
+      elif seg.ack |GT| self.snd.nxt:
+        self.set_pending_ack()
+        return False
 
     # Complete for Stage 6
     # Complete for Stage 7
@@ -812,8 +818,22 @@ class StudentUSocket(StudentUSocketBase):
     num_pkts = 0
     bytes_sent = 0
     # Complete for Stage 4
-    remaining = 0
-    while remaining > 0:
+
+    window = self.snd.wnd
+    remainingTX = len(self.tx_data)
+    mss = self.mss
+    inFlight = self.snd.wnd |MINUS| (self.snd.una |MINUS| self.snd.nxt)
+    availableToSend = window |MINUS| inFlight
+
+
+    while remainingTX > 0:
+      sendSize = min(mss, remainingTX, availableToSend |MINUS| bytes_sent)
+      payload = self.tx_data[:sendSize]
+      self.tx_data = self.tx_data[sendSize:]
+
+      p = self.new_packet(ack=True, data=True, syn=False)
+      p.tcp.payload = payload
+      self.tx(p)
 
       num_pkts += 1
       bytes_sent += len(payload)
