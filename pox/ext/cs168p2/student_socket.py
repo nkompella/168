@@ -827,7 +827,7 @@ class StudentUSocket(StudentUSocketBase):
 
 
     while remainingTX > 0:
-      if len(self.tx.data) <= 0:
+      if len(self.tx_data) <= 0:
         break
       if remainingBytes < snd.wnd:
         break
