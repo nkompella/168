@@ -822,25 +822,34 @@ class StudentUSocket(StudentUSocketBase):
     window = snd.wnd
     remainingTX = len(self.tx_data)
     mss = self.mss
-    remainingBytes = self.snd.wnd |MINUS| (self.snd.una |MINUS| self.snd.nxt |PLUS| bytes_sent)
+    remainingBytes = window |MINUS| (self.snd.nxt |MINUS| self.snd.una |PLUS| bytes_sent)
 
 
 
     while remainingTX > 0:
-      print ("ONE ITERATION")
       if remainingBytes < snd.wnd:
         break
 
+      #Calculate the send size of the next segment of data#
       sendSize = min(mss, remainingTX, remainingBytes |MINUS| bytes_sent)
-      payload = self.tx_data[:sendSize]
-      self.tx_data = self.tx_data[sendSize:]
-      p = self.new_packet(ack=True, data=payload, syn=False)
 
+      #Set the packet data
+      payload = self.tx_data[:sendSize]
+
+      #Trim the current data buffer
+      self.tx_data = self.tx_data[sendSize:]
+
+      #send the packet
+      p = self.new_packet(ack=True, data=payload, syn=False)
       self.tx(p)
+
+      #update the size of data left
       remainingTX = len(self.tx_data)
 
       num_pkts += 1
       bytes_sent += len(payload)
+
+      #Update the remaining window we can send (accounts for inflight)
       remainingBytes = self.snd.wnd | MINUS | (self.snd.una | MINUS | self.snd.nxt | PLUS | bytes_sent)
 
     self.log.debug("sent {0} packets with {1} bytes total".format(num_pkts, bytes_sent))
