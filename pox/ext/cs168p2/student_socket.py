@@ -831,7 +831,7 @@ class StudentUSocket(StudentUSocketBase):
         break
 
       #Calculate the send size of the next segment of data#
-      sendSize = min(mss, remainingTX, remainingBytes)
+      sendSize = min(mss, remainingTX, remainingBytes, window)
 
       #Set the packet data
       payload = self.tx_data[:sendSize]
