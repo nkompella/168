@@ -558,7 +558,7 @@ class StudentUSocket(StudentUSocketBase):
 
 
       # Complete for Stage 4
-      self.snd.nxt |PLUS| len(p.tcp.payload)
+      self.snd.nxt = self.snd.nxt |PLUS| len(p.tcp.payload)
 
     self.manager.tx(p)
 
