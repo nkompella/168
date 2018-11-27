@@ -696,7 +696,7 @@ class StudentUSocket(StudentUSocketBase):
     to the advertised window
     """
     # Complete for Stage 5
-    self.snd.wnd = self.TX_DATA_MAX # remove w/ implemented
+    self.snd.wnd = seg.win
     self.snd.wl1 = seg.seq
     self.snd.wl2 = seg.ack
 
