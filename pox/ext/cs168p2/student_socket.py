@@ -827,7 +827,7 @@ class StudentUSocket(StudentUSocketBase):
 
 
     while remainingTX > 0:
-      if remainingBytes < snd.wnd:
+      if remainingBytes ==0:
         break
 
       #Calculate the send size of the next segment of data#
