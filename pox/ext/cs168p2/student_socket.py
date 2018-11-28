@@ -696,7 +696,7 @@ class StudentUSocket(StudentUSocketBase):
     to the advertised window
     """
     # Complete for Stage 5
-    self.snd.wnd = seg.win
+    self.snd.wnd = seg.win #changed!
     self.snd.wl1 = seg.seq
     self.snd.wl2 = seg.ack
 
@@ -813,25 +813,25 @@ class StudentUSocket(StudentUSocketBase):
     if not self.tx_data:
       return
 
-    # segmentize self.tx_data
+
     snd = self.snd
     num_pkts = 0
     bytes_sent = 0
     # Complete for Stage 4
 
     window = snd.wnd
-    remainingTX = len(self.tx_data)
+    remaining = len(self.tx_data)
     mss = self.mss
     remainingBytes = window |MINUS| (self.snd.nxt |MINUS| self.snd.una |PLUS| bytes_sent)
 
 
 
-    while remainingTX > 0:
+    while remaining > 0:
       if remainingBytes ==0:
         break
 
       #Calculate the send size of the next segment of data#
-      sendSize = min(mss, remainingTX, remainingBytes, window)
+      sendSize = min(mss, remaining, remainingBytes, window)
 
       #Set the packet data
       payload = self.tx_data[:sendSize]
@@ -844,7 +844,7 @@ class StudentUSocket(StudentUSocketBase):
       self.tx(p)
 
       #update the size of data left
-      remainingTX = len(self.tx_data)
+      remaining = len(self.tx_data)
 
       num_pkts += 1
       bytes_sent += len(payload)
