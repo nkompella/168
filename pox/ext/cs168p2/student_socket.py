@@ -827,9 +827,11 @@ class StudentUSocket(StudentUSocketBase):
 
 
     while remaining > 0:
-      if remainingBytes ==0:
+      if remainingBytes == 0:
         break
 
+      if window == 0:
+        break
       #Calculate the send size of the next segment of data#
       sendSize = min(mss, remaining, remainingBytes, window)
 
