@@ -853,7 +853,7 @@ class StudentUSocket(StudentUSocketBase):
       bytes_sent += len(payload)
 
       #Update the remaining window we can send (accounts for inflight)
-      remainingBytes = self.snd.wnd | MINUS | (self.snd.nxt | MINUS | self.snd.una | PLUS | bytes_sent)
+      remainingBytes -= len(payload)
 
     self.log.debug("sent {0} packets with {1} bytes total".format(num_pkts, bytes_sent))
 
