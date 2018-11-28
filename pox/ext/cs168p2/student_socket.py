@@ -475,8 +475,8 @@ class StudentUSocket(StudentUSocketBase):
     elif self.state is SYN_SENT:
       self._delete_tcb()
     elif self.state is ESTABLISHED:
-      # Complete for Stage 7
-      pass
+      self.fin_ctrl.set_pending(FIN_WAIT_1)
+
     elif self.state in (FIN_WAIT_1,FIN_WAIT_2):
       raise RuntimeError("close() is invalid in FIN_WAIT states")
     elif self.state is CLOSE_WAIT:
@@ -734,7 +734,20 @@ class StudentUSocket(StudentUSocketBase):
     self.set_pending_ack()
     if self.state == ESTABLISHED:
       self.state = CLOSE_WAIT
+
+
     # Complete for Stage 7
+    if self.state == FIN_WAIT_1:
+      if seg.ack == self.snd.una:
+        self.start_timer_timewait()
+      else:
+        self.state = CLOSING
+
+    if self.state == FIN_WAIT_2:
+      if seg.ack == self.snd.una:
+        self.start_timer_timewait()
+
+
 
   def check_ack(self, seg):
     """
@@ -763,12 +776,14 @@ class StudentUSocket(StudentUSocketBase):
     # Complete for Stage 6
     # Complete for Stage 7
     if self.state == FIN_WAIT_1:
-      pass
+      if seg.ack == self.snd.una:
+        self.state = FIN_WAIT_2
     elif self.state == FIN_WAIT_2:
       if self.retx_queue.empty():
         self.set_pending_ack()
     elif self.state == CLOSING:
-      pass
+      if seg.ack == self.snd.una:
+        self.start_timer_timewait()
     elif self.state == LAST_ACK:
       if self.fin_ctrl.acks_our_fin(seg.ack):
         self._delete_tcb()
