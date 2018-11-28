@@ -730,7 +730,10 @@ class StudentUSocket(StudentUSocketBase):
 
     self.log.info("Got FIN!")
     # Complete for Stage 6
-
+    self.rcv.nxt = seg.seq |PLUS| 1
+    self.set_pending_ack()
+    if self.state == ESTABLISHED:
+      self.state = CLOSE_WAIT
     # Complete for Stage 7
 
   def check_ack(self, seg):
@@ -830,11 +833,11 @@ class StudentUSocket(StudentUSocketBase):
       if remainingBytes == 0:
         break
 
-      if window == 0:
-        break
       #Calculate the send size of the next segment of data#
       sendSize = min(mss, remaining, remainingBytes, window)
 
+      if sendSize == 0:
+        break
       #Set the packet data
       payload = self.tx_data[:sendSize]
 
