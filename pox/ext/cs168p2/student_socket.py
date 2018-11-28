@@ -481,7 +481,7 @@ class StudentUSocket(StudentUSocketBase):
       raise RuntimeError("close() is invalid in FIN_WAIT states")
     elif self.state is CLOSE_WAIT:
       # Complete for Stage 6
-      FinControl.set_pending(LAST_ACK)
+      FinControl.set_pending(self, LAST_ACK)
     elif self.state in (CLOSING,LAST_ACK,TIME_WAIT):
       raise RuntimeError("connecting closing")
     else:
