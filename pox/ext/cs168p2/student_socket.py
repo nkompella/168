@@ -556,7 +556,8 @@ class StudentUSocket(StudentUSocketBase):
 
     if (p.tcp.SYN or p.tcp.FIN or p.tcp.payload) and not retxed:
 
-
+      p.tx_ts = self.stack.now
+      self.retx_queue.push(p)
       # Complete for Stage 4
       self.snd.nxt = self.snd.nxt |PLUS| len(p.tcp.payload)
 
@@ -711,7 +712,7 @@ class StudentUSocket(StudentUSocketBase):
     acked_pkts = [] # remove when implemented
     self.snd.una = seg.ack
     # Complete Stage 8
-
+    self.retx_queue.pop_upto(seg.ack)
     # Complete Stage 9
 
     for (ackno, p) in acked_pkts:
@@ -894,8 +895,9 @@ class StudentUSocket(StudentUSocketBase):
     that has been in the queue longer than self.rto
     """
     # Complete for Stage 8
-
-    time_in_queue = 0
+    #peek gives (seq, packet)
+    packet = self.retx_queue.peek()[1]
+    time_in_queue = self.stack.now |MINUS| packet.tx_ts
     if time_in_queue > self.rto:
       self.log.debug("earliest packet seqno={0} rto={1} being rtxed".format(p.tcp.seq, self.rto))
       self.tx(p, retxed=True)
