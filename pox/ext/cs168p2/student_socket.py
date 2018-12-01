@@ -897,7 +897,7 @@ class StudentUSocket(StudentUSocketBase):
     # Complete for Stage 8
     #peek gives (seq, packet)
     packet = self.retx_queue.peek()[1]
-    time_in_queue = self.stack.now |MINUS| packet.tx_ts
+    time_in_queue = self.stack.now - packet.tx_ts
     if time_in_queue > self.rto:
       self.log.debug("earliest packet seqno={0} rto={1} being rtxed".format(p.tcp.seq, self.rto))
       self.tx(p, retxed=True)
