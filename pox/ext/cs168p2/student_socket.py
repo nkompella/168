@@ -685,7 +685,7 @@ class StudentUSocket(StudentUSocketBase):
       self.rto = self.srtt + max(self.G, self.K * self.rttvar)
 
     else:
-      self.rttvar = (1-self.beta) * self.rttvar + self.beta * abs(self.SRTT - RTT)
+      self.rttvar = (1-self.beta) * self.rttvar + self.beta * abs(self.srtt - RTT)
       self.srtt = (1- self.alpha) * self.srtt + self.alpha * RTT
 
       self.rt0 = self.srtt + max (self.G, self.K * self.RTTVAR)
