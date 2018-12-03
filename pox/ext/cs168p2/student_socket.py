@@ -672,12 +672,16 @@ class StudentUSocket(StudentUSocketBase):
       self.srtt = RTT
       self.rttvar = RTT/2
       self.rto = self.srtt + max(self.G, self.K * self.rttvar)
+      print(rto)
+      print(rto)
+      print(rto)
+      print("ALL JUST ONE ^")
 
     else:
       self.rttvar = (1-self.beta) * self.rttvar + self.beta * abs(self.srtt - RTT)
       self.srtt = (1- self.alpha) * self.srtt + self.alpha * RTT
 
-      self.rt0 = self.srtt + max (self.G, self.K * self.rttvar)
+      self.rto = self.srtt + max (self.G, self.K * self.rttvar)
 
     if self.rto > self.MAX_RTO:
       self.rto = self.MAX_RTO
