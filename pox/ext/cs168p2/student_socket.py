@@ -667,17 +667,6 @@ class StudentUSocket(StudentUSocketBase):
     Updates the rto based on rfc 6298.
     """
     # Complete for Stage 9
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-    print("WEYLAN IS NOT A COMPLETE IDIOT")
-
     RTT = self.stack.now - acked_pkt.tx_ts
     if self.rto == 1:
       self.srtt = RTT
