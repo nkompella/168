@@ -670,6 +670,16 @@ class StudentUSocket(StudentUSocketBase):
     RTT = acked_pkt.tx_ts - self.stack.now
     if self.srtt == 0:
       print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+      print("WEYLAN IS NOT A COMPLETE IDIOT")
+
+
       self.srtt = RTT
       self.rttvar = RTT/2
       self.rto = self.srtt + max(self.G, self.K * self.rttvar)
