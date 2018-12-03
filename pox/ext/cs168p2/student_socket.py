@@ -668,7 +668,25 @@ class StudentUSocket(StudentUSocketBase):
     Updates the rto based on rfc 6298.
     """
     # Complete for Stage 9
-    pass
+    RTT = self.stack.now - acked_pkt.tx_ts
+    if self.srtt == 0:
+      self.srtt = RTT
+      self.rttvar = RTT/2
+      self.rto = self.srtt + max(self.G, self.K * self.rttvar)
+
+    else:
+      self.rttvar = (1-self.beta) * self.rttvar + self.beta * abs(self.SRTT - RTT)
+      self.srtt = (1- self.alpha) * self.srtt + self.alpha * RTT
+
+      self.RTO = self.srtt + max (self.G, self.K * self.RTTVAR)
+
+    if self.RTO > self.MAX_RTO:
+      self.RTO = self.MAX_RTO
+
+    if self.RTO < self.MIN_RTO:
+      self.RTO = self.MIN_RTO
+
+
 
 
   def handle_accepted_payload(self, payload):
@@ -906,6 +924,12 @@ class StudentUSocket(StudentUSocketBase):
       self.tx(p, retxed=True)
 
       # Complete for Stage 9
+      self.rto = (self.rto * 2)
+      if self.rto > self.MAX_RTO:
+        self.rto = self.MAX_RTO
+
+
+
 
   def set_pending_ack(self):
     """
