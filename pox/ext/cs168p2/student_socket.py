@@ -677,7 +677,7 @@ class StudentUSocket(StudentUSocketBase):
     print("WEYLAN IS NOT A COMPLETE IDIOT")
     print("WEYLAN IS NOT A COMPLETE IDIOT")
     print("WEYLAN IS NOT A COMPLETE IDIOT")
-    
+
     RTT = self.stack.now - acked_pkt.tx_ts
     if self.rto == 1:
       self.srtt = RTT
@@ -743,7 +743,7 @@ class StudentUSocket(StudentUSocketBase):
     acked_pkts = [] # remove when implemented
     self.snd.una = seg.ack
     # Complete Stage 8
-    self.retx_queue.pop_upto(seg.ack)
+    acked_pkts.exted(self.retx_queue.pop_upto(seg.ack))
     # Complete Stage 9
 
     for (ackno, p) in acked_pkts:
