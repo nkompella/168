@@ -916,16 +916,17 @@ class StudentUSocket(StudentUSocketBase):
     """
     # Complete for Stage 8
     #peek gives (seq, packet)
-    p = self.retx_queue.peek()[1]
-    time_in_queue = self.stack.now - p.tx_ts
-    if time_in_queue > self.rto:
-      self.log.debug("earliest packet seqno={0} rto={1} being rtxed".format(p.tcp.seq, self.rto))
-      self.tx(p, retxed=True)
+    if len(self.retx_queue.q) > 0:
+      p = self.retx_queue.peek()[1]
+      time_in_queue = self.stack.now - p.tx_ts
+      if time_in_queue > self.rto:
+        self.log.debug("earliest packet seqno={0} rto={1} being rtxed".format(p.tcp.seq, self.rto))
+        self.tx(p, retxed=True)
 
-      # Complete for Stage 9
-      self.rto = (self.rto * 2)
-      if self.rto > self.MAX_RTO:
-        self.rto = self.MAX_RTO
+        # Complete for Stage 9
+        self.rto = (self.rto * 2)
+        if self.rto > self.MAX_RTO:
+          self.rto = self.MAX_RTO
 
 
 
