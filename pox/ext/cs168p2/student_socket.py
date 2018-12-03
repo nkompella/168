@@ -374,10 +374,9 @@ class RetxQueue(object):
     Returns the tuple (seq_no, packet) with the smallest seq_no in the queue,
     but does not remove it from the queue.
     """
-    if len(self.q) > 0:
-        return self.q[0]
-    else:
-        return None
+
+    return self.q[0]
+
 
 class RecvQueue(RetxQueue):
   """
