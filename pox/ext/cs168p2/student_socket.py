@@ -667,7 +667,7 @@ class StudentUSocket(StudentUSocketBase):
     Updates the rto based on rfc 6298.
     """
     # Complete for Stage 9
-    RTT = self.stack.now - acked_pkt.tx_ts
+    RTT = acked_pkt.tx_ts - self.stack.now
     if self.srtt == 0:
       self.srtt = RTT
       self.rttvar = RTT/2
